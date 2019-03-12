@@ -6,7 +6,6 @@
 #include "tiny_obj_loader.h"
 
 #include <QTemporaryDir>
-#include <QXmlStreamWriter>
 #include <QVector3D>
 #include <QProgressDialog>
 #include <QApplication>

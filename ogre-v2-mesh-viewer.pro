@@ -46,7 +46,8 @@ HEADERS = \
     src/scenetreewidget.h \
     src/scenetreemodel.h \
     src/transformwidget.h \
-    src/inspector.h
+    src/inspector.h \
+    src/simplemeshexporter.h
 
 SOURCES = \
     src/main.cpp \
@@ -76,7 +77,8 @@ SOURCES = \
     src/scenetreewidget.cpp \
     src/scenetreemodel.cpp \
     src/transformwidget.cpp \
-    src/inspector.cpp
+    src/inspector.cpp \
+    src/simplemeshexporter.cpp
 
 FORMS += \
     src/mainwindow.ui \
