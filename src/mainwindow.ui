@@ -30,6 +30,7 @@
     <addaction name="actionOpen"/>
     <addaction name="actionLoad_From_Folder"/>
     <addaction name="actionSaveOgreMesh"/>
+    <addaction name="actionSimpleExportMeshes"/>
     <addaction name="separator"/>
     <addaction name="actionBatchConverter"/>
     <addaction name="separator"/>
@@ -91,6 +92,11 @@
   <action name="actionLoad_From_Folder">
    <property name="text">
     <string>Open Folder...</string>
+   </property>
+  </action>
+  <action name="actionSimpleExportMeshes">
+   <property name="text">
+    <string>Simple export meshes</string>
    </property>
   </action>
  </widget>

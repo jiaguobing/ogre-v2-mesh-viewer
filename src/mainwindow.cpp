@@ -50,6 +50,7 @@
 #include "transformwidget.h"
 #include "inspector.h"
 #include "cameramanager.h"
+#include "simplemeshexporter.h"
 
 
 MainWindow::MainWindow()
@@ -86,6 +87,7 @@ MainWindow::MainWindow()
     connect(ui->actionLoad_From_Folder, &QAction::triggered, this, &MainWindow::actionLoadFromFolder);
     connect(ui->actionExit, &QAction::triggered, this, &MainWindow::doQuitMenuAction);
     connect(ui->actionResetCamera, &QAction::triggered, this, &MainWindow::actionResetCamera);
+    connect(ui->actionSimpleExportMeshes, &QAction::triggered, this, &MainWindow::actionSimpleExportMeshes);
 
     // setup the timer
     mTimer = new QTimer(this);
@@ -363,4 +365,12 @@ void MainWindow::actionBatchConverter()
 void MainWindow::actionResetCamera()
 {
     mOgreWidget->cameraManager()->reset();
+}
+
+void MainWindow::actionSimpleExportMeshes()
+{
+    SimpleMeshExporter exp;
+    exp.setOutputFolder("C:/Temp/buildingA/");
+    exp.save(mOgreManager->meshRootNode());
+
 }
