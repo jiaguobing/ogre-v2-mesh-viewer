@@ -1,6 +1,6 @@
 # Ogre3D mesh viewer/converter
 
-A simple Ogre3D mesh viewer based on v2.1 which can import/export obj models.
+A simple Ogre3D mesh viewer based on v2.1 which can import obj/gltf models. [Download it](https://github.com/chchwy/ogre-v2-mesh-viewer/releases)!
 
 ![screenshot](images/screenshot.png)
 
@@ -15,10 +15,10 @@ A simple Ogre3D mesh viewer based on v2.1 which can import/export obj models.
 
 ## TODO
 
-- [ ] Improve performance by converting obj data to ogre mesh directly. (Currently it uses mesh.xml as intermediate data format)
 - [ ] glTF export
 - [ ] Support DotScene
 - [ ] HLMS material editing
+- [x] Improve performance by converting obj data to ogre mesh directly.
 - [x] Automatically generate normals if there are no normal vectors in obj
 - [x] glTF import
 
