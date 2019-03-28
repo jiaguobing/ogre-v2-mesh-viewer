@@ -370,7 +370,7 @@ void MainWindow::actionResetCamera()
 void MainWindow::actionSimpleExportMeshes()
 {
     SimpleMeshExporter exp;
-    exp.setOutputFolder("C:/Temp/buildingA/");
+    exp.setOutputFolder("C:/Temp/building/");
     exp.save(mOgreManager->meshRootNode());
 
 }

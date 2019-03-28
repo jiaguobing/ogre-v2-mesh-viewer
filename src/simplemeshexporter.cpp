@@ -40,6 +40,7 @@ void SimpleMeshExporter::saveOneNode(Ogre::SceneNode* node)
 
             QString name = QString::fromStdString(node->getName()) + ".mesh";
             name.replace("_", ".");
+            name.replace(":PIV", "");
             QString outFile = mOutputFolder + name;
             qDebug() << outFile;
 
