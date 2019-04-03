@@ -69,6 +69,10 @@ private:
     void actionResetCamera();
     void actionSimpleExportMeshes();
 
+    void actionBgIrradiance();
+    void actionBgEnvironment();
+    void actionBgBlack();
+
     OgreWidget* mOgreWidget = nullptr;
     OgreManager* mOgreManager = nullptr;
 
