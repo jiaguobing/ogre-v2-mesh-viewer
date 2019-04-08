@@ -197,13 +197,15 @@ Ogre::Item* MeshLoader::loadOgreV2(QString meshName)
         Ogre::MeshManager& meshMgr = Ogre::MeshManager::getSingleton();
         Ogre::MeshPtr mesh = meshMgr.create(meshName.toStdString(), "ViewerResc");
 
-        QString sObjFileName = "C:/Temp/obj/" + meshName + ".obj";
-        sObjFileName.replace(".mesh", "");
         item = mOgre->sceneManager()->createItem(mesh);
 
+#ifdef QUICK_EXPORT_OBJ
+        QString sObjFileName = "C:/Temp/obj/" + meshName + ".obj";
+        sObjFileName.replace(".mesh", "");
         ObjExporter objExporter;
         bool ok = objExporter.writeToFile(mesh.get(), sObjFileName);
         qDebug() << sObjFileName << ok;
+#endif
     }
     catch (Ogre::Exception& e) {}
     return item;
