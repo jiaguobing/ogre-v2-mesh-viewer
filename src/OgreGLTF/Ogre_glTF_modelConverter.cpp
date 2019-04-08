@@ -5,7 +5,10 @@
 #include <OgreMesh2.h>
 #include <OgreMeshManager2.h>
 #include <OgreSubMesh2.h>
+#include <OgreMesh2Serializer.h>
+
 #include "Ogre_glTF_internal_utils.hpp"
+
 
 using namespace Ogre_glTF;
 
@@ -185,6 +188,18 @@ Ogre::MeshPtr modelConverter::getOgreMesh(int index)
     OgreMesh->_setBounds(boundingBox, true);
     OgreMesh->_setBoundingSphereRadius(boundingBox.getRadius());
     //OgreLog("Setting 'bounding sphere radius' from bounds : " + std::to_string(boundingBox.getRadius()));
+
+#ifdef QUICK_GLTF_TO_MESH
+    QString meshName = QString::fromStdString(mesh.name);
+    meshName.replace(":", "_");
+
+    QString filename = QString("C:\\Temp\\gltf_mesh\\%1.mesh").arg(meshName);
+    qDebug() << filename;
+
+    auto root = Ogre::Root::getSingletonPtr();
+    Ogre::MeshSerializer meshSerializer2(root->getRenderSystem()->getVaoManager());
+    meshSerializer2.exportMesh(OgreMesh.get(), filename.toStdString());
+#endif
 
     return OgreMesh;
 }
