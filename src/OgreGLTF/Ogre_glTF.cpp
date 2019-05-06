@@ -16,6 +16,8 @@
 
 #include <OgreItem.h>
 #include <OgreMesh2.h>
+#include <OgreWireAabb.h>
+
 
 using namespace Ogre_glTF;
 
@@ -123,6 +125,7 @@ void loaderAdapter::makeNode(Ogre::SceneNode* ogreNode, const tinygltf::Node& no
     {
         Ogre::Item* item = smgr->createItem(meshes[node.mesh]);
         ogreChildNode->attachObject(item);
+        item->setName(ogreChildNode->getName());
 
         for (int i = 0; i < item->getNumSubItems(); ++i)
         {
@@ -131,6 +134,12 @@ void loaderAdapter::makeNode(Ogre::SceneNode* ogreNode, const tinygltf::Node& no
             item->getSubItem(i)->setDatablock(datablock);
         }
 
+        OgreLog("Item Name = " + item->getName());
+        if (item->getName() == "pPlane1")
+        {
+            Ogre::WireAabb* aabb = smgr->createWireAabb();
+            aabb->track(item);
+        }
     }
     if (!node.translation.empty())
         ogreChildNode->translate(node.translation[0], node.translation[1], node.translation[2]);

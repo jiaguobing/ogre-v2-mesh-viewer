@@ -483,3 +483,38 @@ void OgreManager::createBall(int x, int y)
     sceneNode->setPosition(x * 40 - 100, y * 40 - 100, 0);
     sceneNode->attachObject(item);
 }
+
+void DestroyItemRecursively(Ogre::SceneNode* node, Ogre::SceneManager* sceneManager)
+{
+    auto count = node->numAttachedObjects();
+
+    std::vector<Ogre::MovableObject*> attachObjects;
+    attachObjects.reserve(count);
+    for (auto i = 0; i < count; ++i)
+    {
+        Ogre::MovableObject* movable = node->getAttachedObject(i);
+        attachObjects.push_back(movable);
+    }
+    node->detachAllObjects();
+
+    for (Ogre::MovableObject* movable : attachObjects)
+    {
+        //ns::log::info("----DELETE: %s", movable->getName().c_str());
+        sceneManager->destroyMovableObject(movable);
+    }
+
+    for (int i = 0; i < node->numChildren(); ++i)
+    {
+        Ogre::SceneNode* child = static_cast<Ogre::SceneNode*>(node->getChild(i));
+        DestroyItemRecursively(child, sceneManager);
+    }
+}
+
+void OgreManager::unload()
+{
+    DestroyItemRecursively(mMeshRootNode, mSceneManager);
+    mMeshRootNode->removeAndDestroyAllChildren();
+
+    Ogre::MeshManager::getSingleton().removeUnreferencedResources();
+    Ogre::TextureManager::getSingleton().removeUnreferencedResources();
+}

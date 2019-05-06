@@ -89,6 +89,7 @@ MainWindow::MainWindow()
     connect(ui->actionBgEnv, &QAction::triggered, this, &MainWindow::actionBgEnvironment);
     connect(ui->actionBgIrradiance, &QAction::triggered, this, &MainWindow::actionBgIrradiance);
     connect(ui->actionBgBlack, &QAction::triggered, this, &MainWindow::actionBgBlack);
+    connect(ui->actionUnload, &QAction::triggered, this, &MainWindow::actionUnload);
 
     // setup the timer
     mTimer = new QTimer(this);
@@ -381,4 +382,9 @@ void MainWindow::actionBgEnvironment()
 void MainWindow::actionBgBlack()
 {
     mOgreManager->setBlackBackground();
+}
+
+void MainWindow::actionUnload()
+{
+    mOgreManager->unload();
 }

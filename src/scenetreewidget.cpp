@@ -24,10 +24,10 @@ SceneTreeWidget::~SceneTreeWidget()
 
 void SceneTreeWidget::sceneLoaded()
 {
-    QModelIndex rootIndex = ui->treeView->rootIndex();
-    mModel->refresh(rootIndex);
+    //QModelIndex rootIndex = ui->treeView->rootIndex();
+    //mModel->refresh(rootIndex);
 
-    ui->treeView->setModel(mModel);
+    //ui->treeView->setModel(mModel);
 }
 
 void SceneTreeWidget::treeViewClicked(QModelIndex index)

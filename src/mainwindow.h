@@ -72,6 +72,8 @@ private:
     void actionBgEnvironment();
     void actionBgBlack();
 
+    void actionUnload();
+
     OgreWidget* mOgreWidget = nullptr;
     OgreManager* mOgreManager = nullptr;
 

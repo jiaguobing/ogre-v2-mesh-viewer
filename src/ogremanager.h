@@ -48,6 +48,7 @@ class OgreManager : public QObject
     Q_OBJECT
 
 public:
+    void unload();
     OgreManager();
     virtual ~OgreManager();
     void initialize();
