@@ -152,7 +152,7 @@ bool MeshLoader::loadWavefrontObj(QString filePath)
 
     ObjImporter objImporter;
     objImporter.setZUpToYUp(mZupToYup);
-    Ogre::MeshPtr mesh = objImporter.import(filePath);
+    Ogre::MeshPtr mesh = objImporter.import(filePath, true);
 
     if (!mesh)
         qDebug() << "Failed to import obj:" << filePath;
