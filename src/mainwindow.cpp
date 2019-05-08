@@ -318,7 +318,7 @@ void MainWindow::actionExportObj()
     if (mesh != nullptr)
     {
         ObjExporter objExporter;
-        bool ok = objExporter.writeToFile(mesh, sObjFileName);
+        bool ok = objExporter.writeToFile(mesh, sObjFileName, Ogre::Vector3(0, 0, 0));
 
         qDebug() << "Obj=" << sObjFileName << ", Success=" << ok;
 

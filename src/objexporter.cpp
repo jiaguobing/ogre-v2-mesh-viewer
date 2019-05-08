@@ -36,7 +36,7 @@ ObjExporter::ObjExporter()
 {
 }
 
-bool ObjExporter::writeToFile(Ogre::Mesh* srcMesh, const QString& sOutFile)
+bool ObjExporter::writeToFile(Ogre::Mesh* srcMesh, const QString& sOutFile, Ogre::Vector3 posOffset)
 {
     Q_ASSERT(srcMesh);
     auto& meshV1Mgr = Ogre::v1::MeshManager::getSingleton();
@@ -59,7 +59,7 @@ bool ObjExporter::writeToFile(Ogre::Mesh* srcMesh, const QString& sOutFile)
 
     Ogre::v1::XMLMeshSerializer xmlSerializer;
     PROFILE(xmlSerializer.exportMesh(v1Mesh.get(), sTempXmlFile.toStdString()));
-    PROFILE(convertToOgreData(sTempXmlFile));
+    PROFILE(convertToOgreData(sTempXmlFile, posOffset));
 
     QFileInfo info(sOutFile);
     QString sMtlFile = info.absoluteDir().filePath(info.baseName() + ".mtl");
@@ -76,7 +76,7 @@ bool ObjExporter::writeToFile(Ogre::Mesh* srcMesh, const QString& sOutFile)
     return true;
 }
 
-bool ObjExporter::convertToOgreData(const QString& sXmlFile)
+bool ObjExporter::convertToOgreData(const QString& sXmlFile, Ogre::Vector3 offset)
 {
     QFile file(sXmlFile);
     if (file.open(QIODevice::ReadOnly) == false)
@@ -151,6 +151,11 @@ bool ObjExporter::convertToOgreData(const QString& sXmlFile)
                 currentMesh.vertices.push_back(currentVertex);
             }
         }
+    }
+
+    for (OgreDataSubMesh& m : mSubmeshes)
+    {
+        applyPositionOffset(m, offset);
     }
 
     qDebug() << "Mesh count =" << mSubmeshes.size();
@@ -376,4 +381,14 @@ void ObjExporter::normalize(OgreDataVertex& v)
     v.normal[0] = v3D.x();
     v.normal[1] = v3D.y();
     v.normal[2] = v3D.z();
+}
+
+void ObjExporter::applyPositionOffset(OgreDataSubMesh& submesh, Ogre::Vector3 offset)
+{
+    for (OgreDataVertex& v : submesh.vertices)
+    {
+        v.position[0] = v.position[0] + offset.x;
+        v.position[1] = v.position[1] + offset.y;
+        v.position[2] = v.position[2] + offset.z;
+    }
 }

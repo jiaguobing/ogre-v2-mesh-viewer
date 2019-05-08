@@ -36,16 +36,17 @@ class ObjExporter
 public:
     ObjExporter();
 
-    bool writeToFile(Ogre::Mesh* srcMesh, const QString& sOutFile);
+    bool writeToFile(Ogre::Mesh* srcMesh, const QString& sOutFile, Ogre::Vector3 posOffset);
 
 private:
-    bool convertToOgreData(const QString& sXmlFile);
+    bool convertToOgreData(const QString& sXmlFile, Ogre::Vector3 offset);
     void clearOgreDataSubMesh(OgreDataSubMesh&);
     void clearOgreDataVertex(OgreDataVertex&);
     bool writeObjFile(const QString& sOutObjFile, const QString& sMtlFileName);
     bool writeMtlFile(Ogre::Mesh*, const QString& sOutFile);
     void writeTexture(Ogre::Texture* tex, const std::string& sTexFileName);
     void normalize(OgreDataVertex&);
+    void applyPositionOffset(OgreDataSubMesh& submesh, Ogre::Vector3 offset);
     std::vector<OgreDataSubMesh> mSubmeshes;
 };
 

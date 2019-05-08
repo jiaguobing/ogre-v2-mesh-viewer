@@ -4,7 +4,7 @@
 #include <QTextStream>
 #include "OgreMesh2Serializer.h"
 #include "OgreMesh2.h"
-
+#include "objexporter.h"
 
 SimpleMeshExporter::SimpleMeshExporter()
 {
@@ -36,7 +36,7 @@ void SimpleMeshExporter::saveOneNode(Ogre::SceneNode* node)
         Ogre::Item* item = dynamic_cast<Ogre::Item*>(movable);
         if (item)
         {
-            Ogre::MeshPtr mesh = item->getMesh();
+            const Ogre::MeshPtr& mesh = item->getMesh();
 
             QString name = QString::fromStdString(node->getName()) + ".mesh";
             name.replace("_", ".");
@@ -45,9 +45,10 @@ void SimpleMeshExporter::saveOneNode(Ogre::SceneNode* node)
             qDebug() << outFile;
 
             Ogre::Vector3 pos = node->_getDerivedPosition();
-            mFout << QString("file_list[\"%1\"] = {x=%2, y=%3, z=%4}\n").arg(name).arg(pos.x).arg(pos.y).arg(pos.z);
+            mFout << QString("file_list[\"%1\"] = {x=%2, y=%3, z=%4}\n").arg(name).arg(0).arg(0).arg(0);
 
-            saveOneMesh(mesh.get(), outFile);
+            //saveOneMesh(mesh.get(), outFile);
+            saveOneObj(mesh.get(), outFile.replace(".mesh", ".obj"), Ogre::Vector3(pos.x, pos.y, pos.z));
         }
     }
 
@@ -72,7 +73,6 @@ bool SimpleMeshExporter::saveOneMesh(Ogre::Mesh* mesh, QString path)
 
     try
     {
-        
         Ogre::MeshSerializer meshSerializer2(vaoManager);
         meshSerializer2.exportMesh(mesh, path.toStdString());
         ok = true;
@@ -82,5 +82,16 @@ bool SimpleMeshExporter::saveOneMesh(Ogre::Mesh* mesh, QString path)
         ok = false;
     }
     //return (ok && QFile::exists(outFile));
+    return ok;
+}
+
+bool SimpleMeshExporter::saveOneObj(Ogre::Mesh* mesh, QString path, const Ogre::Vector3& positionOffset)
+{
+    const QString& sObjFileName = path;
+
+    ObjExporter objExporter;
+    bool ok = objExporter.writeToFile(mesh, sObjFileName, positionOffset);
+    qDebug() << "Export Obj:" << sObjFileName << ok;
+
     return ok;
 }
