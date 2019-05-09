@@ -410,10 +410,10 @@ void OgreManager::createScene()
     hlmsPbs->setShadowSettings(Ogre::HlmsPbs::PCF_4x4);
 
     mSceneManager->setForwardClustered(true,
-                                       16, 8,    // wight & height 
+                                       16, 8,    // width & height 
                                        24,       // num of slices
                                        96, 5,    // light per cell, decal per cell
-                                       5, 1000); // min & max distance
+                                       5, 10000); // min & max distance
 
     Q_ASSERT(mMeshRootNode == nullptr);
     mMeshRootNode = mSceneManager->getRootSceneNode()->createChildSceneNode();

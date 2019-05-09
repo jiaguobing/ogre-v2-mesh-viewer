@@ -5,6 +5,9 @@
 #include "OgreMesh2Serializer.h"
 #include "OgreMesh2.h"
 #include "objexporter.h"
+#include "OgreHlmsJsonPbs.h"
+#include "OgreSubMesh2.h"
+
 
 SimpleMeshExporter::SimpleMeshExporter()
 {
@@ -47,8 +50,18 @@ void SimpleMeshExporter::saveOneNode(Ogre::SceneNode* node)
             Ogre::Vector3 pos = node->_getDerivedPosition();
             mFout << QString("file_list[\"%1\"] = {x=%2, y=%3, z=%4}\n").arg(name).arg(0).arg(0).arg(0);
 
-            //saveOneMesh(mesh.get(), outFile);
-            saveOneObj(mesh.get(), outFile.replace(".mesh", ".obj"), Ogre::Vector3(pos.x, pos.y, pos.z));
+            qDebug() << "Num Subitems=" << item->getNumSubItems();
+            for (int i = 0; i < item->getNumSubItems(); ++i)
+            {
+                Ogre::SubItem* sub = item->getSubItem(i);
+                Ogre::HlmsDatablock* block = sub->getDatablock();
+                mesh->getSubMesh(i)->setMaterialName(*block->getNameStr());
+
+                saveHlmsJson(block, mOutputFolder + QString::fromStdString(*block->getNameStr()));
+            }
+
+            saveOneMesh(mesh.get(), outFile);
+            //saveOneObj(mesh.get(), outFile.replace(".mesh", ".obj"), Ogre::Vector3(pos.x, pos.y, pos.z));
         }
     }
 
@@ -73,6 +86,11 @@ bool SimpleMeshExporter::saveOneMesh(Ogre::Mesh* mesh, QString path)
 
     try
     {
+        for (Ogre::SubMesh* sub : mesh->getSubMeshes())
+        {
+            qDebug() << "sub-material=" << sub->getMaterialName().c_str();
+        }
+
         Ogre::MeshSerializer meshSerializer2(vaoManager);
         meshSerializer2.exportMesh(mesh, path.toStdString());
         ok = true;
@@ -94,4 +112,22 @@ bool SimpleMeshExporter::saveOneObj(Ogre::Mesh* mesh, QString path, const Ogre::
     qDebug() << "Export Obj:" << sObjFileName << ok;
 
     return ok;
+}
+
+bool SimpleMeshExporter::saveHlmsJson(Ogre::HlmsDatablock* datablock, QString path)
+{
+    auto hlmsManager = Ogre::Root::getSingleton().getHlmsManager();
+    Ogre::HlmsJson hlmsJson(hlmsManager, nullptr);
+    std::string outJson;
+    hlmsJson.saveMaterial(datablock, outJson, "");
+
+    if (!path.endsWith(".material.json"))
+    {
+        path += ".material.json";
+    }
+
+    std::ofstream fout(path.toStdString(), std::ofstream::out);
+    fout << outJson;
+    fout.close();
+    return true;
 }

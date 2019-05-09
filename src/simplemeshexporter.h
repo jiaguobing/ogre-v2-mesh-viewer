@@ -7,6 +7,7 @@ namespace Ogre
 {
 class SceneNode;
 class Mesh;
+class HlmsPbsDatablock;
 }
 
 
@@ -22,6 +23,7 @@ private:
     void saveOneNode(Ogre::SceneNode* node);
     bool saveOneMesh(Ogre::Mesh* mesh, QString path);
     bool saveOneObj(Ogre::Mesh* mesh, QString path, const Ogre::Vector3& positionOffset);
+    bool saveHlmsJson(Ogre::HlmsDatablock* datablock, QString path);
 
     QString mOutputFolder;
     QTextStream mFout;

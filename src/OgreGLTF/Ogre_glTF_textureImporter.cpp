@@ -26,7 +26,7 @@ void textureImporter::loadTexture(const tinygltf::Texture& texture)
 {
     auto textureManager = Ogre::TextureManager::getSingletonPtr();
     const auto& image = model.images[texture.source];
-    const auto name = "glTF_texture_" + image.name + std::to_string(id) + std::to_string(texture.source);
+    const auto name = image.uri; // "glTF_texture_" + image.name + std::to_string(id) + std::to_string(texture.source);
 
     auto OgreTexture = textureManager->getByName(name);
     if (OgreTexture)
@@ -138,7 +138,7 @@ Ogre::TexturePtr textureImporter::generateGreyScaleFromChannel(int gltfTextureSo
         return texture;
     }
 
-    OgreLog("Can't find texure " + name + ". Generating it from glTF");
+    OgreLog("Can't find texture " + name + ". Generating it from glTF");
 
     assert(channel < image.component);
 
@@ -172,7 +172,7 @@ Ogre::TexturePtr textureImporter::generateGreyScaleFromChannel(int gltfTextureSo
 
     //The OgreImage class *can* take ownership of the pointer to the data and automatically delete it.
     //We *don't* want that. 6th argument needs to be set to false to prevent that.
-    //The rest of the funciton is not modifying the model.images[x].image object. We get the image as a const ref.
+    //The rest of the function is not modifying the model.images[x].image object. We get the image as a const ref.
     //In order to keep the rest of this code const correct, and knowing that the "autoDelete" is specifically
     //set to `false`, we're casting away const on the pointer to get the image data.
     OgreImage.loadDynamicImage(imageData.data(), image.width, image.height, 1, pixelFormat, false);
@@ -196,7 +196,7 @@ Ogre::TexturePtr textureImporter::getNormalSNORM(int gltfTextureSourceID)
 {
     auto textureManager = Ogre::TextureManager::getSingletonPtr();
     const auto& image = model.images[gltfTextureSourceID];
-    const auto name = "glTF_texture_" + image.name + std::to_string(id) + std::to_string(gltfTextureSourceID) + "_NormalFixed";
+    const auto name = image.uri;// "glTF_texture_" + image.name + std::to_string(id) + std::to_string(gltfTextureSourceID) + "_NormalFixed";
 
     auto texture = textureManager->getByName(name);
     if (texture)
@@ -205,7 +205,7 @@ Ogre::TexturePtr textureImporter::getNormalSNORM(int gltfTextureSourceID)
         return texture;
     }
 
-    OgreLog("Can't find texure " + name + ". Generating it from glTF");
+    OgreLog("Can't find texture " + name + ". Generating it from glTF");
 
     const auto pixelFormat = [&] {
         if (image.component == 3) return Ogre::PF_BYTE_RGB;
