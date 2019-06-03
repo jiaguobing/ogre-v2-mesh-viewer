@@ -99,7 +99,7 @@ Ogre::MeshPtr modelConverter::getOgreMesh(int index)
     {
         auto subMesh = OgreMesh->createSubMesh();
         //OgreLog("Created one submesh");
-        const auto indexBuffer = extractIndexBuffer(primitive.indices);
+        const Ogre::IndexBufferPacked* indexBuffer = extractIndexBuffer(primitive.indices);
 
         std::vector<VertexBufferPart> parts;
         OgreLog("\tprimitive has : " + std::to_string(primitive.attributes.size()) + " attributes");
@@ -107,6 +107,36 @@ Ogre::MeshPtr modelConverter::getOgreMesh(int index)
         {
             OgreLog("\t " + attribute.first);
             parts.push_back(std::move(extractVertexBuffer(attribute, boundingBox)));
+        }
+
+        //
+        bool hasTangent = false;
+        for (VertexBufferPart& part : parts)
+        {
+            if (part.semantic == Ogre::VES_TANGENT)
+            {
+                hasTangent = true;
+            }
+        }
+        if (!hasTangent)
+        {
+            OgreLog("No~~~~~ no tangent!");
+
+            // find the normal part
+            for (const VertexBufferPart& p : parts)
+            {
+                if (p.semantic == Ogre::VES_NORMAL)
+                {
+                    VertexBufferPart tangentPart;
+                    //tangentPart.buffer = 
+                    tangentPart.type = Ogre::VET_FLOAT4;
+                    tangentPart.semantic = Ogre::VES_TANGENT;
+                    tangentPart.vertexCount = p.vertexCount;
+                    tangentPart.perVertex = 4;
+                    tangentPart.buffer = std::make_unique<GeometryBuffer<float>>(4 * tangentPart.vertexCount);
+                    break;
+                }
+            }
         }
 
         //Get (if they exists) the blend weights and bone index parts of our vertex array object content
@@ -270,7 +300,7 @@ Ogre::IndexBufferPacked* modelConverter::extractIndexBuffer(int accessorID) cons
 
     if (byteStride < 0) throw LoadingError("Can't get valid bytestride from accessor and bufferview. Loading data not possible");
 
-    auto convertTo16Bit{ false };
+    bool convertTo16Bit = false;
     switch (accessor.componentType)
     {
     default: throw LoadingError("Unrecognized index data format");
