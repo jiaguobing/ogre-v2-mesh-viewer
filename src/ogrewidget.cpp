@@ -22,6 +22,7 @@
 #include "ogremanager.h"
 #include "cameracontroller.h"
 
+#include "OgreWindow.h"
 #include "OgreCamera.h"
 
 #include "Compositor/OgreCompositorManager2.h"
@@ -96,7 +97,7 @@ void OgreWidget::createRenderWindow(OgreManager* ogreManager)
                                                  width(), height(),
                                                  false, // full screen
                                                  &parameters);
-    mOgreRenderWindow->setVisible(true);
+    //mOgreRenderWindow->setVisible(true);
 
     // Determine whether the GL context can be reused
     if (ogreManager->isRenderSystemGL() && !glContext)
@@ -149,7 +150,7 @@ void OgreWidget::resizeEvent(QResizeEvent* e)
             Ogre::Real aspectRatio = Ogre::Real(newSize.width()) / Ogre::Real(newSize.height());
             mCamera->setAspectRatio(aspectRatio);
 
-            mOgreRenderWindow->resize(newSize.width(), newSize.height());
+            //mOgreRenderWindow->resize(newSize.width(), newSize.height());
             mOgreRenderWindow->windowMovedOrResized();
             //qDebug() << "Window resize=" << newSize << ", Ratio=" << aspectRatio;
         }

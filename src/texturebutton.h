@@ -22,7 +22,7 @@ public:
     void clear();
 
     static QImage::Format toQtImageFormat(Ogre::PixelFormat);
-    static QImage toQtImage(const Ogre::Image& img);
+    static QImage toQtImage(const Ogre::Image2& img);
 
 private:
     void buttonClicked();
