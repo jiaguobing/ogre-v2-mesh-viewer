@@ -18,7 +18,6 @@
 #include "OgreSubMesh2.h"
 
 #include "OgreHlmsManager.h"
-#include "OgreHlmsTextureManager.h"
 #include "OgreHlmsPbs.h"
 #include "OgreHlmsPbsDatablock.h"
 #include "OgreHlmsJsonPbs.h"
@@ -412,6 +411,7 @@ void ObjImporter::generateAABB(OgreDataSubMesh& submesh)
 
 Ogre::HlmsPbsDatablock* ObjImporter::importMaterial(const tinyobj::material_t& srcMtl)
 {
+    /*
     Ogre::Root& root = Ogre::Root::getSingleton();
     Ogre::HlmsManager* hlmsManager = root.getHlmsManager();
     Ogre::HlmsTextureManager* hlmsTextureManager = hlmsManager->getTextureManager();
@@ -497,4 +497,6 @@ Ogre::HlmsPbsDatablock* ObjImporter::importMaterial(const tinyobj::material_t& s
     }
 
     return datablock;
+    */
+    return nullptr;
 }

@@ -119,7 +119,7 @@ void OgreWidget::createCompositor()
     const Ogre::IdString workspaceNameHash = workspaceName;
 
     Ogre::CompositorManager2* compositorManager = mOgreManager->ogreRoot()->getCompositorManager2();
-    compositorManager->addWorkspace(mOgreManager->sceneManager(), mOgreRenderWindow, mCamera, workspaceNameHash, true);
+    compositorManager->addWorkspace(mOgreManager->sceneManager(), mOgreRenderWindow->getTexture(), mCamera, workspaceNameHash, true);
 
     mInitialized = true;
 }
