@@ -5,10 +5,10 @@ QT += widgets
 CONFIG -= flat
 DEFINES += APP_VERSION_NUMBER=\\\"0.4.0\\\"
 
-OGREHOME = $$(OGREHOME)
-isEmpty(OGREHOME) {
-    OGREHOME = "C:/SDK/OgreSDK/Ogre/build/sdk"
-}
+#OGREHOME = $$(OGREHOME)
+#isEmpty(OGREHOME) {
+    OGREHOME = "D:/OgreSDK/Ogre/build/sdk"
+#}
 
 message(OGRE_HOME: $$OGREHOME)
 
