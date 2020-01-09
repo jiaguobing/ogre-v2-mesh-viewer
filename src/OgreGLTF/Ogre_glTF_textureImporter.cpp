@@ -6,10 +6,8 @@
 #include <OgreTextureGpuManager.h>
 #include <OgreTextureGpu.h>
 #include <OgreImage2.h>
-#include <OgreHardwarePixelBuffer.h>
 #include <OgreColourValue.h>
 #include <OgreRoot.h>
-#include <OgreRenderTarget.h>
 #include "Ogre_glTF.hpp"
 
 using namespace Ogre_glTF;
@@ -24,11 +22,11 @@ size_t textureImporter::id{ 0 };
 
 void textureImporter::loadTexture(const tinygltf::Texture& texture)
 {
-    auto textureManager = Ogre::TextureGpuManager::getSingletonPtr();
+    auto textureManager = Ogre::Root::getSingleton().getRenderSystem()->getTextureGpuManager();
     const auto& image = model.images[texture.source];
     const auto name = image.uri;
 
-    auto OgreTexture = textureManager->getByName(name);
+    auto OgreTexture = textureManager->findTextureNoThrow(Ogre::IdString(name));
     if (OgreTexture)
     {
         //OgreLog("Texture " + name + " already loaded in Ogre::TextureManager");
@@ -38,8 +36,8 @@ void textureImporter::loadTexture(const tinygltf::Texture& texture)
     OgreLog("Loading texture image " + name);
 
     const auto pixelFormat = [&] {
-        if (image.component == 3) return Ogre::PF_BYTE_RGB;
-        if (image.component == 4) return Ogre::PF_BYTE_RGBA;
+        if (image.component == 3) return Ogre::PFG_RGBA8_UNORM;
+        if (image.component == 4) return Ogre::PFG_RGB8_UNORM;
 
         throw InitError("Can get " + name + "pixel format");
     }();
@@ -50,26 +48,17 @@ void textureImporter::loadTexture(const tinygltf::Texture& texture)
         OgreLog("I have no idea what is going on with the image format");
     }
 
-    Ogre::Image OgreImage;
+    Ogre::Image2 OgreImage;
 
     //The OgreImage class *can* take ownership of the pointer to the data and automatically delete it.
     //We *don't* want that. 6th argument needs to be set to false to prevent that.
     //The rest of the function is not modifying the model.images[x].image object. We get the image as a const ref.
     //In order to keep the rest of this code const correct, and knowing that the "autoDelete" is specifically
     //set to `false`, we're casting away const on the pointer to get the image data.
-    OgreImage.loadDynamicImage(const_cast<Ogre::uchar*>(image.image.data()), image.width, image.height, 1, pixelFormat, false);
+    OgreImage.loadDynamicImage(const_cast<Ogre::uchar*>(image.image.data()), image.width, image.height, 1, Ogre::TextureTypes::Type2D,  pixelFormat, false);
 
-    OgreTexture = textureManager->createManual(name,
-                                               Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-                                               Ogre::TextureType::TEX_TYPE_2D_ARRAY,
-                                               image.width,
-                                               image.height,
-                                               1,
-                                               1,
-                                               pixelFormat,
-                                               Ogre::TU_DEFAULT,
-                                               nullptr,
-                                               isHardwareGammaEnabled());
+    OgreTexture = textureManager->createOrRetrieveTexture(name, Ogre::GpuPageOutStrategy::Discard
+                                               
 
     OgreTexture->loadImage(OgreImage);
 
@@ -89,18 +78,8 @@ bool textureImporter::isHardwareGammaEnabled() const
     catch (const std::exception& e)
     {
         (void)e;
-        OgreLog("It appears that render system doesn't know if it uses srgb gamma conversion? How is that possible? We're going to check the render targets "
-                "anyway");
+        OgreLog("It appears that render system doesn't know if it uses sRGB gamma conversion? How is that possible?");
     }
-
-    //Check if any render target has the option, and if so, return true
-    auto renderTargetIt = renderSystem->getRenderTargetIterator();
-    do
-    {
-        if (renderTargetIt.current()->second->isHardwareGammaEnabled()) return true;
-
-        renderTargetIt.moveNext();
-    } while (renderTargetIt.current() != renderTargetIt.end());
 
     return false;
 }
@@ -123,9 +102,9 @@ Ogre::TexturePtr textureImporter::getTexture(int glTFTextureSourceID)
     return texture->second;
 }
 
-Ogre::TexturePtr textureImporter::generateGreyScaleFromChannel(int gltfTextureSourceID, int channel)
+Ogre::TextureGpu* textureImporter::generateGreyScaleFromChannel(int gltfTextureSourceID, int channel)
 {
-    auto textureManager = Ogre::TextureManager::getSingletonPtr();
+    auto textureManager = Ogre::Root::getSingletonPtr()->getRenderSystem()->getTextureGpuManager();
     const auto& image = model.images[gltfTextureSourceID];
 
     assert(channel < 4 && channel >= 0 /*, "Channel needs to be between 0 and 3"*/);
